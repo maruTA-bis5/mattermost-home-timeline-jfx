@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.bis5.mattermost.hometimeline.controller.SettingController">
+   <center>
+      <ScrollPane fitToWidth="true">
+         <content>
+            <GridPane prefWidth="534.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="NEVER" maxWidth="261.4000244140625" minWidth="10.0" prefWidth="145.40000915527344" />
+                  <ColumnConstraints hgrow="NEVER" maxWidth="388.59999084472656" minWidth="10.0" prefWidth="388.59999084472656" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label text="Server" />
+                  <Label text="URL" GridPane.rowIndex="1" />
+                  <TextField fx:id="urlInut" promptText="https://your-mattermost-url" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Login" GridPane.rowIndex="2" />
+                  <TextField fx:id="basicLoginUsername" promptText="Username or Email" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <PasswordField fx:id="basicLoginPassword" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="General" GridPane.rowIndex="5" />
+                  <Label text="Max Posts" GridPane.rowIndex="6" />
+                  <Spinner fx:id="maxPosts" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label text="Formatting" GridPane.rowIndex="7" />
+                  <FlowPane alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                     <children>
+                        <RadioButton fx:id="enableFormatting" mnemonicParsing="false" text="Enable" />
+                        <RadioButton fx:id="disableFormatting" mnemonicParsing="false" text="Disable" />
+                     </children>
+                  </FlowPane>
+                  <RadioButton fx:id="basicLoginMethod" mnemonicParsing="false" text="Basic (Username or Email &amp; Password, LDAP)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               </children>
+            </GridPane>
+         </content>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <FlowPane alignment="TOP_RIGHT" columnHalignment="CENTER">
+         <children>
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSave" text="Save and Close" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" />
+         </children>
+      </FlowPane>
+   </bottom>
+</BorderPane>
