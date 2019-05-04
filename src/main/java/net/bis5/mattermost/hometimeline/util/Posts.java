@@ -24,4 +24,11 @@ public class Posts {
         // これだけで良い? IntegrationのBot accountはこれで判定できる?
         return Boolean.parseBoolean((String) post.getProps().getOrDefault("from_webhook", "false"));
     }
+
+    public static boolean hasOverrideIconUrl(Post post) {
+        if (post.getProps() == null) {
+            return false;
+        }
+        return post.getProps().get("override_icon_url") != null;
+    }
 }

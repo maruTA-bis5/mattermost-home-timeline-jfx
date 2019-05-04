@@ -18,6 +18,7 @@ import net.bis5.mattermost.hometimeline.store.ImageCacheStore;
 import net.bis5.mattermost.hometimeline.store.PreferenceStore;
 import net.bis5.mattermost.hometimeline.store.PreferenceStore.BasicLoginDetail;
 import net.bis5.mattermost.hometimeline.store.PreferenceStore.PreferenceKey;
+import net.bis5.mattermost.hometimeline.util.Posts;
 import net.bis5.mattermost.model.Post;
 import net.bis5.mattermost.websocket.MattermostWebSocketClient;
 import net.bis5.mattermost.websocket.WebSocketEvent;
@@ -73,8 +74,17 @@ public class WebSocketClientService {
                 if (post.getType() != null && post.getType().getCode().startsWith("system_")) {
                     return;
                 }
-                Path profilePic = imageCacheStore.downloadProfileImage(webClient, post.getUserId()); // TODO
-                                                                                                     // override_url
+                Path profilePic;
+                if (Posts.hasOverrideIconUrl(post)) {
+                    String iconUrl = (String) post.getProps().get("override_icon_url");
+                    if (iconUrl.startsWith(serverUrl)) {
+                        profilePic = imageCacheStore.downloadInternalImage(webClient, iconUrl);
+                    } else {
+                        profilePic = imageCacheStore.downloadExternalImage(iconUrl);
+                    }
+                } else {
+                    profilePic = imageCacheStore.downloadProfileImage(webClient, post.getUserId());
+                }
                 PostItem item = PostItem.create(post, serverUrl, data.getSenderName(), data.getChannelDisplayName(),
                         profilePic);
                 Platform.runLater(() -> mainViewModel.add(item));
