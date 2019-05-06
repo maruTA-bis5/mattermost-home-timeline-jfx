@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
@@ -39,6 +40,8 @@ public class WebSocketClientService {
     Posts posts;
     ExecutorService executor;
     private MattermostClient webClient;
+    private MattermostWebSocketClient wsClient;
+    private final AtomicBoolean shutdown = new AtomicBoolean(false);
 
     @PostConstruct
     public void initialize() {
@@ -58,15 +61,12 @@ public class WebSocketClientService {
             webClient = MattermostClient.builder().url(serverUrl).build();
             BasicLoginDetail loginDetail = preferences.get(PreferenceKey.LOGIN_DETAIL); // TODO ログイン方法ごとに変える
             webClient.login(loginDetail.username, loginDetail.password);
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                webClient.logout();
-            }));
             String accessToken = webClient.getCurrentAccessToken().get();
 
             String apiUrl = serverUrl + "/api/v4";
             apiUrl = apiUrl + "/websocket"; // FIXME これはMattermost4j側でやること
 
-            MattermostWebSocketClient wsClient = MattermostWebSocketClient.newInstance(apiUrl, accessToken);
+            wsClient = MattermostWebSocketClient.newInstance(apiUrl, accessToken);
             wsClient.getHandlers().addAllEventHandler(event -> {
                 if (event.getEvent() == WebSocketEvent.POSTED) {
                     return;
@@ -87,6 +87,9 @@ public class WebSocketClientService {
             });
             AtomicInteger retryCount = new AtomicInteger(0);
             wsClient.getHandlers().addOnCloseHandler(session -> {
+                if (shutdown.get()) {
+                    return;
+                }
                 System.out.printf("Retry #%d", retryCount.incrementAndGet());
                 openConnection(wsClient, webClient);
             });
@@ -101,6 +104,18 @@ public class WebSocketClientService {
         } catch (DeploymentException | IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public void shutdown() {
+        shutdown.set(true);
+        executor.shutdown();
+        try {
+            wsClient.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        webClient.logout();
+        webClient.close();
     }
 
 }
