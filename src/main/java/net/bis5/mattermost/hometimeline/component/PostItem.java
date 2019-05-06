@@ -40,7 +40,7 @@ public class PostItem extends HBox {
         postMetadata.getChildren().add(senderInfo);
         senderInfo.setStyle("-fx-font-size: 16");
         senderInfo.getChildren().add(new Label(senderName));
-        if (Posts.isBotPost(post)) {
+        if (Posts.utils().isBotPost(post)) {
             senderInfo.getChildren().add(new Label("[BOT]"));
         }
         senderInfo.getChildren().add(new Label("@" + channelDisplayName));

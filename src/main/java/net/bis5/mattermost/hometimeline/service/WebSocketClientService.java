@@ -35,6 +35,8 @@ public class WebSocketClientService {
     MainViewModel mainViewModel;
     @Inject
     ImageCacheStore imageCacheStore;
+    @Inject
+    Posts posts;
     ExecutorService executor;
     private MattermostClient webClient;
 
@@ -78,17 +80,7 @@ public class WebSocketClientService {
                 if (post.getType() != null && post.getType().getCode().startsWith("system_")) {
                     return;
                 }
-                Path profilePic;
-                if (Posts.hasOverrideIconUrl(post)) {
-                    String iconUrl = (String) post.getProps().get("override_icon_url");
-                    if (iconUrl.startsWith(serverUrl)) {
-                        profilePic = imageCacheStore.downloadInternalImage(webClient, iconUrl);
-                    } else {
-                        profilePic = imageCacheStore.downloadExternalImage(iconUrl);
-                    }
-                } else {
-                    profilePic = imageCacheStore.downloadProfileImage(webClient, post.getUserId());
-                }
+                Path profilePic = posts.downloadProfilePic(post, serverUrl, webClient);
                 PostItem item = PostItem.create(post, serverUrl, data.getSenderName(), data.getChannelDisplayName(),
                         profilePic);
                 Platform.runLater(() -> mainViewModel.add(item));

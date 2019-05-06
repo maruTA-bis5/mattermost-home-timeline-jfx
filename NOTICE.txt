@@ -1,0 +1,7 @@
+Mattermost Home Timeline App
+Copyright 2019- Takayuki Maruyama
+
+This product includes image file from Mattermost Web App (https://github.com/mattermost/mattermost-webapp).
+License: Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+TODO: write for 3rd party libraries
