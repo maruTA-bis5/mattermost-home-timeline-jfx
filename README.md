@@ -1,6 +1,8 @@
 Mattermost Home Timeline App
 ============================
 
+![Screenshot](./screenshot.png)
+
 ## Requirements
 - Java 11 or later
 - Mattermost Server 5.10 or later
