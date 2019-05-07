@@ -20,11 +20,11 @@ public class PreferenceStore {
     public void loadPreferences() {
         // TODO 永続化ストアから読み込む
         // 以下はダミー
-        put(PreferenceKey.URL, "https://<mattermost-url>");
+        put(PreferenceKey.URL, System.getenv("MATTERMOST_URL"));
         put(PreferenceKey.LOGIN_METHOD, LoginMethod.BASIC);
         BasicLoginDetail loginDetail = new BasicLoginDetail();
-        loginDetail.username = "<username>";
-        loginDetail.password = "<password>";
+        loginDetail.username = System.getenv("MATTERMOST_USERNAME");
+        loginDetail.password = System.getenv("MATTERMOST_PASSWORD");
         put(PreferenceKey.LOGIN_DETAIL, loginDetail);
         put(PreferenceKey.MAX_POSTS, 200);
         put(PreferenceKey.FORMATTING, true);
