@@ -39,6 +39,13 @@ public class Posts {
             String overrideIconUrl = (String) post.getProps().get("override_icon_url");
             return overrideIconUrl != null && !overrideIconUrl.isEmpty();
         }
+
+        public boolean isUseUserIcon(Post post) {
+            if (post.getProps() == null) {
+                return false;
+            }
+            return Boolean.parseBoolean((String) post.getProps().getOrDefault("use_user_icon", "false"));
+        }
     }
 
     public String getProfilePictureUrl(Post post, String siteUrl) {
@@ -64,7 +71,7 @@ public class Posts {
                 profilePic = imageStore.downloadExternalImage(iconUrl);
             }
         } else {
-            if (utils().isBotPost(post)) {
+            if (utils().isBotPost(post) && !utils().isUseUserIcon(post)) {
                 // from webhook post but override_icon_url does not specified
                 try {
                     profilePic = Paths.get(getClass().getResource("/incoming_webhook.jpg").toURI());
