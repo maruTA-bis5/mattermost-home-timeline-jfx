@@ -2,6 +2,7 @@ package net.bis5.mattermost.hometimeline.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,6 +25,8 @@ import net.bis5.mattermost.hometimeline.util.Posts;
 import net.bis5.mattermost.model.Post;
 import net.bis5.mattermost.websocket.MattermostWebSocketClient;
 import net.bis5.mattermost.websocket.WebSocketEvent;
+import net.bis5.mattermost.websocket.model.PostEditedEventPayload;
+import net.bis5.mattermost.websocket.model.PostEditedEventPayload.PostEditedEventData;
 import net.bis5.mattermost.websocket.model.PostedEventPayload;
 import net.bis5.mattermost.websocket.model.PostedEventPayload.PostedEventData;
 
@@ -84,6 +87,12 @@ public class WebSocketClientService {
                 PostItem item = PostItem.create(post, serverUrl, data.getSenderName(), data.getChannelDisplayName(),
                         profilePic);
                 Platform.runLater(() -> mainViewModel.add(item));
+            });
+            wsClient.getHandlers().addHandler(WebSocketEvent.POST_EDITED, event -> {
+                PostEditedEventPayload payload = event.cast();
+                PostEditedEventData data = payload.getData();
+                Post post = data.getPost();
+                Platform.runLater(() -> mainViewModel.update(post));
             });
             AtomicInteger retryCount = new AtomicInteger(0);
             wsClient.getHandlers().addOnCloseHandler(session -> {

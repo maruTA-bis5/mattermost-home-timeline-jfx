@@ -244,4 +244,11 @@ public class PostItem extends HBox {
             getChildren().add(new Label(message));
         }
     }
+
+	public void update(Post updatedPost) {
+        if (postIdProperty().isNotEqualTo(updatedPost.getId()).get()) {
+            throw new IllegalArgumentException("updatedPost is not target this PostItem");
+        }
+        messagePropertyImpl().set(updatedPost.getMessage());
+	}
 }
