@@ -44,4 +44,13 @@ public class MainViewModel {
         item.update(updatedPost);
     }
 
+	public void delete(Post deletedPost) {
+        String postId = deletedPost.getId();
+        find(postId).ifPresent(item -> removeItem(item));
+	}
+
+    private void removeItem(PostItem item) {
+        itemsProperty.getValue().remove(item);
+    }
+
 }

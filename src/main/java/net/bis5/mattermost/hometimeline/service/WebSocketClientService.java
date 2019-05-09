@@ -26,7 +26,8 @@ import net.bis5.mattermost.model.Post;
 import net.bis5.mattermost.websocket.MattermostWebSocketClient;
 import net.bis5.mattermost.websocket.WebSocketEvent;
 import net.bis5.mattermost.websocket.model.PostEditedEventPayload;
-import net.bis5.mattermost.websocket.model.PostEditedEventPayload.PostEditedEventData;
+import net.bis5.mattermost.websocket.model.PostDeletedEventPayload;
+import net.bis5.mattermost.websocket.model.PostUpdatedEventData;
 import net.bis5.mattermost.websocket.model.PostedEventPayload;
 import net.bis5.mattermost.websocket.model.PostedEventPayload.PostedEventData;
 
@@ -90,9 +91,15 @@ public class WebSocketClientService {
             });
             wsClient.getHandlers().addHandler(WebSocketEvent.POST_EDITED, event -> {
                 PostEditedEventPayload payload = event.cast();
-                PostEditedEventData data = payload.getData();
+                PostUpdatedEventData data = payload.getData();
                 Post post = data.getPost();
                 Platform.runLater(() -> mainViewModel.update(post));
+            });
+            wsClient.getHandlers().addHandler(WebSocketEvent.POST_DELETED, event -> {
+                PostDeletedEventPayload payload = event.cast();
+                PostUpdatedEventData data = payload.getData();
+                Post post = data.getPost();
+                Platform.runLater(() -> mainViewModel.delete(post));
             });
             AtomicInteger retryCount = new AtomicInteger(0);
             wsClient.getHandlers().addOnCloseHandler(session -> {
